@@ -1,19 +1,13 @@
 from flask import Flask, request, jsonify
 import tensorflow as tf
-from google.cloud import storage
-#import os
-from clustering_model import ClusteringModel
-from recommendation_model import RecommendationModel
+from model2 import load_model, get_recommendations
+from data import df
 
-app = Flask(__name__)
-#os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "submission-mgce-irfanal-bc0df925669e.json"
+app = Flask(_name_)
 
 #load model
 interpreter=tf.lite.Interpreter(model_path='models/model.tflite')
-clustering_model = ClusteringModel('models/model_clustering.pickle')
-recommendation_model = RecommendationModel('models/rekomendasi.pickle')
 interpreter.allocate_tensors()
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -46,27 +40,30 @@ def predict():
     except Exception as e:
         print(f'Error during prediction: {e}')
         return jsonify({'error': 'Prediction error'}), 500
-    
-@app.route('/clustering', methods=['POST'])
-def clustering():
-    data = request.json['data']
-    # Lakukan inferensi clustering menggunakan model
-    labels = clustering_model.perform_clustering(data)
-    response = {'labels': labels}
-    return jsonify(response)
 
-@app.route('/recommendation', methods=['POST'])
-def recommendation():
-    data = request.json
-    usia = float(data['usia'])
-    berat_badan = float(data['berat_badan'])
-    tinggi_badan = float(data['tinggi_badan'])
-    trimester = float(data['trimester'])
-    # Lakukan rekomendasi menggunakan model
-    recommendations = recommendation_model.make_recommendations(tinggi_badan, berat_badan, usia, trimester)
-    response = {'labels': data['labels'],'recommendations': recommendations}
-    return jsonify(response)
+model = load_model()
+
+@app.route('/recommend', methods=['POST'])
+def recommend_food():
+    # Mendapatkan data dari permintaan POST
+    req_data = request.get_json()
+
+    # Memeriksa apakah data yang diperlukan ada
+    if 'name' not in req_data:
+        return jsonify({'error': 'Data tidak lengkap'}), 400
+
+    # Mengambil data makanan dari permintaan
+    name = req_data['name']
+
+    # Melakukan rekomendasi menggunakan fungsi dari file model
+    food_indices = get_recommendations(name, model)
+
+    # Mengambil nama makanan berdasarkan indeks yang direkomendasikan
+    recommended_food = [df['Name'].iloc[idx] for idx in food_indices]
+
+    # Mengirimkan rekomendasi makanan sebagai respons
+    return jsonify({'recommendation': recommended_food})
 
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     app.run(host='0.0.0.0', port=8080)
