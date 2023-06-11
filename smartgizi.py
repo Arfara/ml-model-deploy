@@ -65,5 +65,5 @@ def recommend_food():
     return jsonify({'recommendation': recommended_food})
 
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
