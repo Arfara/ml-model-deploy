@@ -1,17 +1,17 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t',
-          'asia-east1-docker.pkg.dev/ml-deploy-389314/smartgizi-repo/smartgizi_img:latest',
+          'asia-east1-docker.pkg.dev/smartgizi-ml-model-deploy/deploy-ml-model/smartgizi_img:latest',
           '.']
   
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push',
-          'asia-east1-docker.pkg.dev/ml-deploy-389314/smartgizi-repo/smartgizi_img:latest']
+          'asia-east1-docker.pkg.dev/smartgizi-ml-model-deploy/deploy-ml-model/smartgizi_img:latest']
   
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['run', 'deploy', 'smartgizi-api',
           '--allow-unauthenticated',
           '--region=asia-southeast2',
-          '--image=asia-east1-docker.pkg.dev/ml-deploy-389314/smartgizi-repo/smartgizi_img:latest',
+          '--image=asia-east1-docker.pkg.dev/smartgizi-ml-model-deploy/deploy-ml-model/smartgizi_img:latest',
           '--memory=2Gi',
           '--min-instances=1']
