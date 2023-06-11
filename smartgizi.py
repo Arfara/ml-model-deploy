@@ -3,7 +3,7 @@ import tensorflow as tf
 from model2 import load_model, get_recommendations
 from data import df
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 #load model
 interpreter=tf.lite.Interpreter(model_path='models/model.tflite')
