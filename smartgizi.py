@@ -14,32 +14,6 @@ clustering_model = ClusteringModel('models/model_clustering.pickle')
 recommendation_model = RecommendationModel('models/rekomendasi.pickle')
 interpreter.allocate_tensors()
 
-# Load model from Google Cloud Storage
-# def load_model_from_gcs():
-#     bucket_name = 'smartgizi_bucket_2'
-#     model_filename = 'logistic_regression.tflite'
-
-#     try:
-#         client = storage.Client()
-#         bucket = client.get_bucket(bucket_name)
-#         blob = bucket.blob(model_filename)
-
-#         # Save model to temporary local file
-#         local_model_filename = '/tmp/logistic_regression.tflite'
-#         blob.download_to_filename(local_model_filename)
-
-#         # Load model from local file
-#         interpreter = tf.lite.Interpreter(model_path=local_model_filename)
-#         interpreter.allocate_tensors()
-
-#         return interpreter
-
-#     except Exception as e:
-#         print(f'Error loading model from Google Cloud Storage: {e}')
-#         return None
-
-# interpreter = load_model_from_gcs()
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
